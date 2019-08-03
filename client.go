@@ -12,7 +12,7 @@ type Client struct {
 
 	rmsg chan *redis.Message
 
-	eventHandle func(*Message)
+	EventHandle func(*Message)
 }
 
 type Message struct {
