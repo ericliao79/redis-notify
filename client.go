@@ -54,7 +54,7 @@ func (c *Client) Run(channel... string) {
 		case rmsg := <-c.rmsg:
 			var m Message
 			_ = json.Unmarshal([]byte(rmsg.Payload), &m)
-			c.eventHandle(&m)
+			c.EventHandle(&m)
 		}
 	}
 }
