@@ -15,12 +15,6 @@ type Client struct {
 	eventHandle func(*Message)
 }
 
-type Message struct {
-	Channel string      `json:"channel"`
-	Event   string      `json:"event"`
-	Message interface{} `json:"message"`
-}
-
 func NewClient() *Client {
 	redisHost := os.Getenv("REDIS_HOST")
 	redisPort := os.Getenv("REDIS_PORT")
