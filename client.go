@@ -12,12 +12,12 @@ type Client struct {
 
 	rmsg chan *redis.Message
 
-	EventHandle func(*Message)
+	eventHandle func(*Message)
 }
 
 type Message struct {
-	Channel string `json:"channel"`
-	Event string `json:"event"`
+	Channel string      `json:"channel"`
+	Event   string      `json:"event"`
 	Message interface{} `json:"message"`
 }
 
@@ -39,13 +39,13 @@ func NewClient() *Client {
 	}
 }
 
-func (c *Client) Run(channel... string) {
+func (c *Client) Run(channel ...string) {
 	pubsub := c.rcli.Subscribe(channel...)
 
 	go func() {
 		for {
 			msg, _ := pubsub.ReceiveMessage()
-			c.rmsg <-msg
+			c.rmsg <- msg
 		}
 	}()
 
@@ -54,7 +54,11 @@ func (c *Client) Run(channel... string) {
 		case rmsg := <-c.rmsg:
 			var m Message
 			_ = json.Unmarshal([]byte(rmsg.Payload), &m)
-			c.EventHandle(&m)
+			c.eventHandle(&m)
 		}
 	}
+}
+
+func (c *Client) SetEventHandle(f func(*Message)) {
+	c.eventHandle = f
 }
