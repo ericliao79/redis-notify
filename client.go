@@ -2,9 +2,7 @@ package redis_notify
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/go-redis/redis"
-	"os"
 )
 
 type Client struct {
@@ -15,20 +13,9 @@ type Client struct {
 	eventHandle func(*Message)
 }
 
-func NewClient() *Client {
-	redisHost := os.Getenv("REDIS_HOST")
-	redisPort := os.Getenv("REDIS_PORT")
-	client := redis.NewClient(&redis.Options{
-		Addr:     redisHost + ":" + redisPort,
-		Password: "", // no password set
-		DB:       0,  // use default DB
-	})
-
-	pong, err := client.Ping().Result()
-	fmt.Println(pong, err)
-	// Output: PONG <nil>
+func NewClient(rcli *redis.Client) *Client {
 	return &Client{
-		rcli: client,
+		rcli: rcli,
 		rmsg: make(chan *redis.Message),
 	}
 }
